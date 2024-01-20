@@ -1,0 +1,258 @@
+25/11/2023 
+•	We can use if conditions (landscape or portrait using MediaQuery class) for rendering device size accordingly and ternary expressions to customize widgets for the different operating systems ( Platform.is check)
+•	We can create the adaptive widgets and responsive widgets also.
+•	The font size of the text in the app would remain same even if the user has changed the text of device in the settings so use MediaQuery class(i.e. Text('This changes!', style: TextStyle(fontSize: 20 * MediaQuery.of(context).textScaleFactor));
+•	The flutter redraws everything at the rate of 60 fps frames per second. Which means that everything is refreshed on the screen
+•	In flutter 3 trees 1. Widget Tree 2. Element Tree 3. Render Tree
+•	Widget tree created by us, element tree creates the elements of each widget and links it as a pointer to the widget tree and also creates the link with the Rendered tree
+•	The element tree has a state object of the statefull widget which is independently created along the render tree
+•	Whenever the build is run the widget tree is recreated.
+•	The render tree has a state object that is attached to element of stateful widget in element tree. Whenever setstate is called the state object is edited and the statefulwidget becomes dirty and is replaced with a new statefulwidget and the state object is connected to that new one statefulwidget. The state object is not replaced but is changed. Other child widgets are also replaced with the new one but the rendered tree holds the information (e.g. position info) of old widget tree 
+•	The render tree updates the references only on every build and the widget tree is rebuild(configerations are changed). The element tree finds the latest configuration and passes it to the render tree to display it on the screen.
+11/26/2023
+•	Whenever the app runs , it runs the build methods of all the widgets in a sequence in a widget tree and when instances of the widgets /classes are called their constructors are called first.
+•	In bigger apps we should split app into widgets and those parts off app which are changed frequently should be kept in separate widgets so other parts are just recreated and the one which is changed frequently doesn’t spills over other parts like myhomePage etc
+•	Flutter is efficient in rebuilding the widget tree but the element tree and the render tree is not rebuild every time.
+•	Using const constructors and const widgets improves performance. Const constructors make the class immutable, i.e. the properties of class will be fixed and non changeable. So the widgets whose constructors are const (mostly stateless widgets) and while instatiating them, we are not passing any dynamic data to them and you know that they will remain same then add const with their instantiated object to avoid recreation of that widget. For example const Text(‘Delete’)
+•	Writing good code means that your code should be easily readable,understandable ,maintainable and your colleagues can also understand it and after month or year you should able to edit it easily. Should also have an eye on improving performance of the code
+•	The builder methods helps the code readability.e.g. _buildLandscapeContent()
+•	The … spread operator return all the elements of a list in a sequence
+•	In the widget lifecycle the constructor function runs first and then the build method in stateless widget. In statefulwidget the constructor function runs and the the createState method runs to create state object. Then constructor of State Object runs. Then InitState() method only runs 1 time automatically and when the state is created it is not executed again. When the setState is called , didUpdateWidget() method is called whenever the widget is updated with which the state belongs and then build method of that updated widget is called and at last dispose() method is called when the widget is removed.
+•	The @override means we are calling our own initState method deliberately and not the one present in the parent State class.
+•	
+•	An initState method is also present in the State class(parent) so super.initState Keyword means that not just our own initState function runs but that one also runs which is build in the state.
+•	didUpDateWidget helps you to compare the widget(widget.newOne) with the old one widget.(which is taken as the argument).
+•	Dispose is used when he element and the state of that widget is removed.
+•	First the constructor of stf is called->createState of stf->constructor of stfState widget->initState->updateWidget upon call of setState->dispose
+•	The App Lifecycle also has some Lifecycle States:1. Inactive 2. Paused 3. Resumed 4. Suspending
+•	Mix In means that we add certain properties and methods from other class without fully inheriting that class using with keyword e.g. class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver
+
+•	@override
+void didChangeAppLifecycleState(AppLifecycleState state) {} This method is called whenever the state of App Lifecycle changes.
+
+@override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this); //this line means an observer is set to detect the state change
+    super.initState();
+  }
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {//this method is automatically called when observer sees state changing
+print(state);
+  }
+  @override
+  dispose() {
+    WidgetsBinding.instance.removeObserver(this);//this line means we are clearing /disposing the listener to lifecycle changing to avoid memory leaks
+    super.dispose();
+
+•	Context gives the meta information about the widgets and their position in the widget tree. They are like a skeleton of all the widgets. They are elements in the element tree and context of all widgets are related to each other also and know each other’s position.
+•	We pass the data between the widgets using the arguments in the constructors of that widget but flutter passes the data using the InheritedWidget which creates direct tunnel behind the scenes to that widget and passes the data e.g. Theme data to any widget or MediaQuery data etc. The InheritedWidget passes the data with the help of context which knows the position of every Widget
+
+27/11/2023
+•	Convention is to use firstly dart Imports in file and then third party packages import and then custom project files.
+•	Every widget can have key. InitState can be used to give dynamic data to that widget.
+•	The keys are used in the widgets to link that particular widget with the corresponding element and the state object of that element in the element tree.
+•	const TransactionItem({
+  super.key, // this is the key accepted as argument and also linked with the parent class (Stateful Widget) with the super keyword.
+  required this.transaction,
+  required this.deleteTx,
+}) : super(key: key) ; //this is short notation for calling super constructor
+called constructor initializer list i.e. forward the key to the parent class so that flutter knows what to do with that key as the class can’t do all this alone.
+Navigation and Multiple Screens
+•	can use the word of ‘route’ or ‘page’ for the screens. Any widget can be a screen or page but technically the widget which uses Scaffold (which gives appBar and Body) is said to be a screen or page.
+•	gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent
+
+Sliver means scrollable, GridDelegate means alignment, MaxCrossAxisExtent means the width, childExpectRatio = 3/2 means the height of grid element
+•	the opening screen is the one which is provided in the home argument of MaterialApp. 
+11/28/2023
+colorScheme: ThemeData().colorScheme.copyWith(primary: Colors.pink, secondary: Colors.amber),  // Create primary and secondary colors using this line
+canvas
+Color: Color.fromRGBO(255, 230, 230, 1),Create canvas colour of the whole app
+textTheme: TextTheme(titleMedium: TextStyle(
+    fontSize: 20,
+    fontFamily: 'RobotoCondensed',
+    fontWeight: FontWeight.bold),
+bodySmall: TextStyle(color: Color.fromRGBO(20, 51, 51, 1))//custom text theme
+)
+
+•	InkWell is a gesture detector with the ripple effect also.
+•	To move through different pages we use Navigator() class, which uses context. The pages are in form of stack in our app and the top most page is visible to us so the push method is used to add a page in topmost stack and pop means to remove that page
+•	onTap : () => selectCategory(context) // to accept context as argument of the function(selectCategory) in onTap we declare it as anonymous function.
+•	MaterialPageRoute is like a wrapper which actually gives us animation form jumping or poping to or from the page. 
+
+30/11/2023
+•	for bigger apps it is recommended that we use NamedRoutes instead of push routes.
+•	Stack widget is used to place widgets on top of each other in 3D e.g. image and its title.
+•	ClipRRect widget is used to adjust the properties of the image e.g. its corners, etc inside the parent widget. i.e. to shape our image according to the rounded corner cards. 
+•	Positioned widget is used to control the position of child in stack.
+softWrap: true, // if the text is too long it should be wrapped according to the card or any other container 
+overflow: TextOverflow.fade, //if it exceeds the box it just fades out . used as safety mechanism
+•	
+1/12/2023
+•	Positioned  widget is used to position its child widget according to the dimension available according to the parent widget. In Stack the image is biggest widget (with height 250) so its dimension are considered
+•	where method runs on every item in the list and if the test returns true, adds that item to the new list.
+•	onGenerateRoute: //this method is used when you have used a pushNamed navigator for a named route but that route is not registered in the main.dart file ( in the routes table) when you click on that route , the page you have provided in onGenerateRoute is opened by default.
+•	onUnknownRoute:// when flutter fails to identify the screen with all it measures then before throwing an error it dynamically runs the onUnknownRoute method and builds the screen provided in that method with message  e.g. page with error message ‘we could’nt find that page’ or just a generic starting page of the app 
+•	Use getters methods with switch statements to give String value to the enums.
+•	firstWhere(); callback method which returns a Boolean and add that item as custom Meal. e.g. final selectedMeal = DUMMY_MEALS.firstWhere((meal) => meal.id == mealId);
+•	For adding bottom tab bar we make a new screen named tab_screen.dart with a statefulWidget inside it.
+•	For topNavigation Bar the stateless widget can do the work but not for bottomNavigation Bar since its state changes.
+•	Alignment argument inside the container aligns the child widgets e.g. alignment=Alignment.centreLeft
+•	W700 is same as fontWeight.bold.
+•	The pushReplacementNamed function replaces the existing page with a new page and so that our app doesn’t builds a large amount of stack of pages which keeps on cumulating over each other over the time
+•	Inside the initState we do our initialization tasks since the initState method runs before the build method of that widget runs. 
+•	The indexWhere method gives the index as int in the given list.
+•	Dart provides lots of methods we can apply on the lists and Maps to configure them.
+•	In this app we manage our screen features like applying filters and marking as favourites directly from the stf (MyApp) from the main.dart file and pass the data through the routes arguments and through the constructors of these routes we accept that data and when the state changes in the MyApp widget the whole widget is rebuild or whole app is rebuild we can say thus it is not optimal method that upon changing the toggle switch we rebuild our whole app so we use the State Management technique to overcome this situation.
+•	any() method will run on every element of list and if given condition is true it will return also a Boolean(true)
+_favouriteMeals.add(DUMMY_MEALS.firstWhere((meal) => meal.id == mealId)); here DummyMeals is list of <Meals> and also is favouriteMeals so add function adds item in favourite meals if condition is true
+•	IMP: 1. constructors are used to fetch and also to transfer the data as in meals app while calling the toggle favourite method in the main file from the product detail screen…..2. Also the arguments been set in the routes table for the screens are always forwarded even if these screens are called from any where in the app using navigator.PushedNamed method. 
+
+State Management 
+•	the widget GridTile is usually used in the GridView.builder. 
+•	The ClipRRect (clip rounded rectangle) widget forces every child to have rounded rectangle corners.
+•	Why we need state management? We have learned that navigate to different routes using Navigator.of(context).push constructor and also Named routes and we use constructors to pass data to the child widgets. This way of passing data can be cumbersome in bigger apps and difficult to manage. As well as of performance point of view, whenever some state changes or any small change occurrs, whole main.dart widget is rebuild or app is rebuilt so that’s why state management is used.
+•	 In front End apps it is all about the data(which could be anything e.g. products, adding product as favourite) and the UI(function of your date(state) or data displayed on screen ). State is basically the Data which is displayed as the UI and changes over time. When state changes it is also reflected on the UI e.g. data is fetched from the server the loading spinner is displayed which is reflection of state change on UI. 2 types of state: App-wide state and widget(local) state. App wide state means it effects the entire or significant parts of app e.g. loaded products are used in many screens of app. Widget wide state means only that data which is relevant to particular widget e.g. should I display a loading spinner in that widget. This state doesn’t effects other widgets at all.
+•	Providers: The Providers are the date/state containers attached to any parent widget and listeners are setup in the child widget. The connection of provider(data container) and the listener is established with of(context){Inherited widget} directly behind the scenes and When the data in the provider container changes, the listeners ,listen to that change and build() method of that child is only called.
+•	ChangeNotifier class is used by the InheritedWidget to notifiy the listeners using notifyListener(); method
+•	We have to register the provider class(data container) in that widget which is level higher than the child widgets which have to listen that provider.
+•	The listener which is set in the child class, looks up the widget tree in the parent widgets for the provider, and then it establishes connection with the class provided in the parent provider.
+•	When extends keyword is used after the class this means that the class can get access to the properties and methods of the other classes which is extended e.g. class human extends mammal. This is called Inheritence.
+•	Extends keyword is used to inherit classes. With keywork is used to inherit mixins. Mixins are classes with less logical connection with our class than the extended class which have more logical connection with our class. E.g. class Human extends Mammal with Agility{}. Here Agility is a mixin class.
+•	We can extend only one parent class with our class but multiple mixins can be attached using ‘with’ keyword. Mixins are like utility functions.
+•	It is good to have lean widgets and the core logics(heavy lifting) in providers class.
+•	In the listener { Provider.of<Products>(context) } if the Products class gets something changes all the listeners listen to it and their widgets get rebuilt so if we want to avoid this rebuilt for a certain child widget with that listener we add following argument listen: false. { Provider.of<Products>(context, listen: false) }
+•	Use ChangeNotifyProvider() while making the object in the parent class and use ChangeNotifyProvider.value() in the child class with value: argument for defining the object and it also clears the old stored data
+•	Using the listener Provider.of<Product>(ctx); when the data inside the Product changes the whole build method of that containing listner widget is called so if we want a subpart of any widget to just rebuild then we can use this approach: Consumer<Product>( create: (ctx, nearest instance i.e. Product , child) => the subtree to rebuild only. The ‘child‘ here is argument in which we define that widget which we still want in that subtree to not rebuild
+•	To set up more than one providers in the same root widget we use MultiProviders(providers : [],) class here. 
+•	Spacer() widget is used to put the space between the items in row or columns instead of sizedBox.
+•	ListTile can be used with ListView.builder and GridTile with GridView.builder.
+•	The Dismissable widget allows us to swipe a card or anyother widget
+•	Point to be noted: the model’s properties are used by the the item widget we create and the provider containers data is used by the main screen of that item which displays that data .e.g. cart item takes data of cart model(properties) and cart screen takes data of cart provider(which has that data). 
+•	If want to change state of a widget only which doesn’t have to do with the other parts of app like displaying the expand more or expand less container in the order screen USE STATEFUL WIDGET IN THIS CASE.
+•	We use two type of listeners 1.Provider.of<Orders>(context); //this  runs whole build method of that widget if something changes in Orders 2.Consumer.of<Orders>(builder : (ctx,cart,child) => Badge(),)// this runs only builder method.
+
+Working with User input and Forms
+•	The widget ScaffoldMessenger.of(context).showSnackBar(SnackBar: content) reaches the nearest Scaffold using the Context.
+•	We can show dialogue box upon action on a dismissable widget using confirmDismiss argument.
+•	The build-in Form widget help in getting user input and also text validation i.e. wether there are mistakes in our text which should be marked red.
+•	The listview make items scrollable but in forms the item out of view may make some input data loss since the widgets inside forms work together
+•	The textInputAction argument in the textFormField gives enum wether the Enter button in the soft keyboard goes to next line or press submit or go to next icon.
+•	The safe way is to use 
+Form(
+child: SingleChildScrollView(
+child: Column(
+children: [ ... ],),),),
+•	So that our user input doesn’t gets lost when we scroll out of the view and then return and find it lost since listview rebuilds the widget returning in view. 
+•	final _priceFocusMode = FocusNode();
+•	
+•	TextFormField(
+  decoration: InputDecoration(label: Text('Title'),),
+  textInputAction: TextInputAction.next,//go the the next line
+  onFieldSubmitted: (_){
+    FocusScope.of(context).requestFocus(_priceFocusNode);//FocusScope lets know flutter where it is… requestFocus takes property defined and the price textfield takes that property as input
+  },
+),
+TextFormField(
+  decoration: InputDecoration(label: Text('Price'),),
+  textInputAction: TextInputAction.next,
+  keyboardType: TextInputType.number,
+  focusNode: _priceFocusNode,
+)
+•	The textInputAction triggers the onFieldSubmitted method.
+•	GlobalKey is used to interact with the Form widget inside our code to the outside method which is to be triggered i.e.
+•	void saveForm() {
+  _form.currentState!.save(); }
+When it is executed all the onSaved: methods inside the fields are executed.
+•	In Form validator: method is used to validate the entries of the textfield. If the function returns null it means no error in the input and returning the String text is treated as error message displayed on the field
+•	void saveForm() {
+  final _isValid = _form.currentState!.validate();// it returns a bool so if validator returns String(error message) the _isValid is false then. If validator returns null(means no error) the _isValid is true then.
+  if (!_isValid) {
+    return; th
+  }
+•	didChangeDependencies also run before the build method is called. We use it because in the initState the data other than the routing action , could easily be fetched.
+HTTP REQUESTS
+•	Storing data in memory of device is temporary and is lost when device restarted, but using SQlite or other device storage options data persists across app restarts and data stored on server is available for all devices.
+•	Flutter is not directly connected to database (MySQL,NoSQL ..) but to the server which stores our credentials and we send http request to a server to access data from database.
+•	Firebase is actually server+database so we actually interact with the server.
+•	We send requests to URL which is interpreted by the server and then returns the info
+•	This depends on server which type of requests It accepts so read its official documentation of back-end
+•	The REST API are the most common standard we used to communicate with
+•	When we communicate with server using REST(Or RESTful) APIs we communicate using http verb + http endpoint(url) to perform action.
+•	Some requests are GET,POST,PATCH=update,PUT=replace,DELETE
+•	The response.body means the response from firebase is an object with a body in json format which has a name (key) and a cryptic unique id(value).
+•	The future class is included in our code dart executes all our code and registers the future(simultaneously executes it also). At end dart checks is future done, if done then executes ‘then’ method for that future
+•	then() method also returns a future,which can be chained one after the other.e.g. then().then().catchError().then() //catchError also returns a future for handling the errors
+•	Asynchronous code means it executes whilst the other code doesn’t waits for it to finish
+•	Async and await work together. Await blocks the further code execution of its parent Future function until it gets completed.
+•	Keep the widgets lean and move the http request logic inside the providers page.
+•	throw(error) inside the catch(error) block is used to forward the error 
+•	RefreshIndicator => used to slide down and refresh page
+•	for get and post request HTTP package throws an error which we catch but the delete request doesn’t throws an error.
+•	Optimistic updating means if we fail to delete product we add it again in the same list.
+•	Abstract class means that we can’t directly instantiate it.
+•	class HttpException implements Exception{ }// Exception is an abstract class . implements keyword means the class is forced to implement all the methods and properties
+•	toString method can be applied to any object in dart and is present in Exception class to convert error message to string
+•	The http package throws error in get and post request but in patch , put , and delete it doesn’t throws error instead we manually have to manage that by using if else statement and status code logic
+User Authentication
+•	Flutter uses token(which is stored on the device) to authenticate the user is logged in the app on device.
+•	RESTfulAPI only have the endpoints to communicate with the server and in website the sessions contain the info that user is logged in with the help of cookie but in flutter when user Is logged in a ‘token’ (long string) is created in server and sent back to app to store in the device.
+•	The API endpoints should be protected from the invalid user request so we attach token with each request sent to server
+•	Inside the container widget, transform argument takes Matrix4 object which is class used for rotating , scaling and moving a container.
+•	Translate method is used to offset the container little bit
+•	(..)cascade operator means it doesn’t returns its own value but the value of previously called object returns. E.g ..translate: //…
+•	obscureText means input is not shown to the user instead stars are shown in the input field
+•	firebase Auth REST API’s are different API from those we used earlier and they hardcoded endpoints to which we send our payload(body in json) and token
+•	and get specific data in response e.g. token, id , expiresIn the email we entered etc.
+•	Working with normal api we can get error status code(400) in the response which we can throw in the catch block but working with authorization the restAPI gives error status code not directly but inside a map, the error status code and the message
+•	In the Url we separate the query parameters after the token with the ‘ampersand’(&) e.g.
+•	orderBy and equalTo are  firebase commands which are used for automatic filtering on the server side
+•	the FutureBuilder (future: …, builder: (ctx, snapshot) => Widget).. the widget builds the future elements. The future argument takes the future it call or take, and snapshot is the data to which it will resolve
+•	sharedPreferences allow us to tap into simple key value store in our device. Works for device storage. 
+•	SharedPreferences.getInstance();// here getInstance is the tunnel to device storage.
+•	Json data is always in the form of strings.
+
+Animations
+
+•	_controller = AnimationController(vsync: this ); //vsync argument takes a pointer to the widget to let AnimationController watch it and play animation only when it is visible and ‘this’ is object which belongs to the containing widget and has built method
+•	Tween() class object knows how to animate between two values (derived from ‘between’).
+•	.animate(CurvedAnimation(parent: _controller, curve: Curves.linear));// .animate object tells how to animate. parent takes the controller by which it should be controlled .curve shows how to split the duration time.
+•	_controller.forward(); //forward starts the animation.
+•	AnimatedBuilder is more efficient than manually customizing the animation but AnimatedContainer is even more efficient and easy.
+•	More nested animations means more slow device apply with care. Performance matters more . People don’t like slow and not easy to use app.
+•	Some good animation widgets: FadeInImage,Hero, CustomScrollView,
+
+Adding Google maps, accesing the local file storage and native device features.
+•	File is a class in dart:io libraray which represents the file (image, document, text etc )in the file system. File system is way of organizing and storing files on device storage system e.g. e.g., FAT32, NTFS, exFAT, these are file system types
+•	File path is a string 
+•	Image.file lets us access the image stored inside the file on device.
+•	The android and ios OS gives specific paths for our app to store data and the package”path_provider” suggests/finds those paths to which we can write apps data on harddrive.and the package”path” is used for combining paths
+•	SQlLite uses SQL query language and SQL approach of organizing saving data
+Firebase module
+•	Push notification are those notifications of app which we get even if our app is closed.
+•	Firebase is fully managed backend( includes database and APIs for talking with that database, SDK’s(packages)), file storage, authentication, push notifications, analytics, on-demand server-side code (cloud functions) ).
+•	Firebase have diverse functionalities that we cannot just use the REST APIs  /Web APIs(exposed by firebase) with HTTP package to communicate, instead we have to use firebase SDK (bundle of packages) in our flutter app so that our app effectively communicates with various core services and features of firebase.
+•	Collection is table in database and document is the entry in that table. E.g products is collection and in the list of products, each product is a document with data in the fields
+•	Collection has documents and documents can have subcollections.
+•	The snapshot() method returns stream i.e. we can set up a listener through our firebase SDK to our database collection or document and whenever that data changes, the listener listens to it and our UI is updated. This is called realtime update.
+•	Stream is a dart object which gives us a new value whenever the source changes.
+•	The collection and documents treated as Map<String, dynamic>
+•	The on PlatformException catch(err) { //… } this throws specific type of errors thrown by Firebase like invalid email.
+•	FirebaseAuth.instance.authStateChanged(), authStateChanged returns a stream whenever the AuthState changes i.e. new user sign up , log in logout, it will fire a stream. And on app loading the it will check if the cached token is stored or not. If stored it will validate it and this all is managed by firebase SDK.
+•	Trim() method removes the empty spaces in string.
+•	Firebase rules language invented by firebase team: match  /chat  { //rules here} => this means we match certain path and rules are defined in curly braces for that path/{document=**} means all the documents in any collection. write means :create update and delete.allow write : request.auth != null; => this means if request has some auth information(a token e.g. ) then the user is allowed to write so the authenticated users are allowed to write. 
+•	timestamp class is made available by firestore package.
+•	the FirebaseStorage.instance.ref()// here instance gives all the configurations of the signedIn user its token etc, and ref() refers to the main bucket.
+•	For push notifications we have to link our app to the push notification servers (firebase cloud messaging)which requires identifications, the sdk of firebase cloud messaging is attached with our flutter app
+
+
+Using the Native Device Code in flutter Apps
+•	we use MethodChannel class in side initState to send method call to Native Platform Host
+•	MethodChannel uses identifier(specific type of addresses) to access native device features 
+•	and invokeMethod takes the function inside parenthesis to be executed e.g. Methodchannel(‘course.flutter.dev/battery’).invokeMethod(‘getBatteryLevel’)
+In MainActivity.java file we write java code to build connection with the native device function/method we used in fthe flutter code
+
+
+
+My experiences
+•	Use wrap widget if you want some childrens to move to the next line like chips .
+•	To use list view inside list view ,use shrink wrap true and phyics:NeverScrollabeScrollPhysics inside the inside list view.
